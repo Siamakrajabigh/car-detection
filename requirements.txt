@@ -1,0 +1,5 @@
+transformers
+Flask
+timm
+Werkzeug==0.16.0
+git+https://github.com/huggingface/transformers
