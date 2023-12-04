@@ -5,6 +5,7 @@ from PIL import Image
 import requests
 import mpld3
 import matplotlib.pyplot as plt
+import base64
 
 app = Flask(__name__)
 
