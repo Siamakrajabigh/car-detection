@@ -3,6 +3,8 @@ from transformers import DetrImageProcessor, DetrForObjectDetection
 import torch
 from PIL import Image
 import requests
+import mpld3
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -10,6 +12,29 @@ app = Flask(__name__)
 processor = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50")
 model = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50")
 
+
+# colors for visualization
+COLORS = [[0.000, 0.447, 0.741], [0.850, 0.325, 0.098], [0.929, 0.694, 0.125],
+          [0.494, 0.184, 0.556], [0.466, 0.674, 0.188], [0.301, 0.745, 0.933]]
+
+def plot_results(pil_img, scores, labels, boxes):
+    fig = plt.figure(figsize=(16,10))
+    plt.imshow(pil_img)
+    ax = plt.gca()
+    colors = COLORS * 100
+    for score, label, (xmin, ymin, xmax, ymax),c  in zip(scores.tolist(), labels.tolist(), boxes.tolist(), colors):
+        ax.add_patch(plt.Rectangle((xmin, ymin), xmax - xmin, ymax - ymin,
+                                   fill=False, color=c, linewidth=3))
+        text = f'{model.config.id2label[label]}: {score:0.2f}'
+        ax.text(xmin, ymin, text, fontsize=15,
+                bbox=dict(facecolor='yellow', alpha=0.5))
+    plt.axis('off')
+    fig.savefig("temp.png")
+    file = open("temp.png", mode="rb")
+    image_binary_data = file.read()
+    file.close()
+    return image_binary_data
+    
 # Endpoint for car detection
 @app.route('/detect_car', methods=['POST'])
 def detect_car():
@@ -49,8 +74,13 @@ def detect_car():
                     'score': int(score.item()),
                     'label': int(car_class_index),
                     'box': box.tolist()
+                    
                 })
         detected_cars
+        image_binary_data = plot_results(image, car_scores, car_labels, car_boxes)
+        detected_cars.append({
+            'image': image_binary_data
+        })
 
         # Return the detected cars as JSON
         return jsonify({'detected_cars': detected_cars})
