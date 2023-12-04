@@ -7,8 +7,9 @@ import requests
 app = Flask(__name__)
 
 # Load pre-trained model
-car_detection_model = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50")
 processor = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50")
+encoding = processor(image, return_tensors="pt")
+model = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50")
 
 # Endpoint for car detection
 @app.route('/detect_car', methods=['POST'])
@@ -17,16 +18,17 @@ def detect_car():
         # Get the image from the request
         image = Image.open(request.files.get('image'))
 
-        # Process the image
-        inputs = processor(images=image, return_tensors="pt")
-
         # Perform car detection
         with torch.no_grad():
-            outputs = car_detection_model(**inputs)
+          outputs = model(**encoding)
 
-        # Post-process the results
-        results = processor.post_process_object_detection(outputs, inputs)
+        # postprocess model outputs
+        width, height = image.size
 
+        postprocessed_outputs = processor.post_process_object_detection(outputs,
+                                                                        target_sizes=[(height, width)],
+                                                                        threshold=0.9)
+        results = postprocessed_outputs[0]
         # Assuming class index for "car" is 3
         car_class_index = 3
 
@@ -49,6 +51,7 @@ def detect_car():
                     'label': int(car_class_index),
                     'box': box.tolist()
                 })
+        detected_cars
 
         # Return the detected cars as JSON
         return jsonify({'detected_cars': detected_cars})
@@ -57,5 +60,4 @@ def detect_car():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-
+    app.run(host='0.0.0.0', port=5000) 
