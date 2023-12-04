@@ -8,7 +8,6 @@ app = Flask(__name__)
 
 # Load pre-trained model
 processor = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50")
-encoding = processor(image, return_tensors="pt")
 model = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50")
 
 # Endpoint for car detection
@@ -17,7 +16,7 @@ def detect_car():
     try:
         # Get the image from the request
         image = Image.open(request.files.get('image'))
-
+        encoding = processor(image, return_tensors="pt")
         # Perform car detection
         with torch.no_grad():
           outputs = model(**encoding)
