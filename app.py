@@ -15,7 +15,7 @@ processor = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50")
 def detect_car():
     try:
         # Get the image from the request
-        image = request.files.get('image')
+        image = Image.open(request.files.get('image'))
 
         # Process the image
         inputs = processor(images=image, return_tensors="pt")
