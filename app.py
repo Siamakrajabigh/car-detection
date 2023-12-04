@@ -78,7 +78,7 @@ def detect_car():
                 })
         detected_cars
         image_binary_data = plot_results(image, car_scores, car_labels, car_boxes)
-          encoded_image = base64.b64encode(image_binary_data).decode('utf-8')
+        encoded_image = base64.b64encode(image_binary_data).decode('utf-8')
         detected_cars.append({
             'image': encoded_image
         })
