@@ -64,8 +64,5 @@ plt.show()
 
 Replace `'your_encoded_image_data'` with the actual base64-encoded image data received from the service.
 
-## Contributing
-
-Feel free to contribute to this project by creating issues or submitting pull requests. We welcome your feedback and collaboration!
-
+**Notice: due to the payments of the EC2 server and low security of the service, I Stop the server and each time I start it, the publit IP is deferent, please contact me to provide you the IP adress.
 ---
