@@ -12,7 +12,7 @@ Welcome to the Automated Object Detection project using DETR (DEtection Transfom
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/automated-object-detection.git
+    git clone https:https:https://github.com/Siamakrajabigh/car-detection.git
     cd automated-object-detection
     ```
 
@@ -28,7 +28,7 @@ Welcome to the Automated Object Detection project using DETR (DEtection Transfom
     python app.py
     ```
 
-The service will be available at `http://127.0.0.1:5000/`.
+The service will be available at `http://127.0.0.1:5000/`.**
 
 ## Usage
 
